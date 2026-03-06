@@ -18,8 +18,10 @@ contract RebaseToken is ERC20{
 
     uint256 private s_interestRate = 5e10;
 
+    mapping(address => uint256) private s_userInterestRate;
+
     event inrerestRateSet(uint256 newInrerestRate);
-    
+
     constructor()
         ERC20("RebaseToken", "RBT")
     {}
@@ -28,5 +30,9 @@ contract RebaseToken is ERC20{
         revert RebaseToken__interestRateCanOnlyDecrease(s_interestRate, _newInterestRate);
         s_interestRate = _newInterestRate;
         emit interestRateSet(_newInterestRate);
+    }
+
+    function mint(address _to, uint256 _mintAmount) external {
+        _mint(_to, _mintAmount);
     }
 }
