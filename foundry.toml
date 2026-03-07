@@ -1,9 +1,13 @@
 [profile.default]
+# override any downstream evm_version (openzeppelin sets osaka which newer foundry
+# versions don't recognize) so that `forge build`/`forge test` works.
+evm_version = "paris"
 src = "src"
 out = "out"
 libs = ["lib"]
 remappings = [
-    '@openzeppelin/=lib/openzeppelin-contracts/'
+    '@openzeppelin/=lib/openzeppelin-contracts/',
+    '@forge-std/=lib/forge-std/'
 ]
 
 # See more config options https://github.com/foundry-rs/foundry/blob/master/crates/config/README.md#all-options

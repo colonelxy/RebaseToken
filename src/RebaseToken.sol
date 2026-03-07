@@ -13,21 +13,32 @@ import {ERC20} from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
  *      This token does not implement any rebase logic itself, but can be used
  *      in conjunction with a rebase mechanism to simulate the effects of rebasing.
  */
-contract RebaseToken is ERC20{
-    error RebaseToken__interestRateCanOnlyDecrease(uint256 oldRate, uint256 newRate);
+contract RebaseToken is ERC20 {
+    error RebaseToken__interestRateCanOnlyDecrease(
+        uint256 oldRate,
+        uint256 newRate
+    );
 
     uint256 private s_interestRate = 5e10;
 
     mapping(address => uint256) private s_userInterestRate;
 
-    event inrerestRateSet(uint256 newInrerestRate);
+    // event emitted when the global interest rate is updated
+    event interestRateSet(uint256 newInterestRate);
 
-    constructor()
-        ERC20("RebaseToken", "RBT")
-    {}
+    /// @notice Returns the current global interest rate
+    function interestRate() external view returns (uint256) {
+        return s_interestRate;
+    }
+
+    constructor() ERC20("RebaseToken", "RBT") {}
     function setInterestRate(uint256 _newInterestRate) external {
-        if(_newInterestRate > s_interestRate )
-        revert RebaseToken__interestRateCanOnlyDecrease(s_interestRate, _newInterestRate);
+        if (_newInterestRate > s_interestRate) {
+            revert RebaseToken__interestRateCanOnlyDecrease(
+                s_interestRate,
+                _newInterestRate
+            );
+        }
         s_interestRate = _newInterestRate;
         emit interestRateSet(_newInterestRate);
     }
