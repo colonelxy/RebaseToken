@@ -22,6 +22,7 @@ contract RebaseToken is ERC20 {
     uint256 private s_interestRate = 5e10;
 
     mapping(address => uint256) private s_userInterestRate;
+    mapping(address => uint256) private s_userLastUpdatedTimeStamp;
 
     // event emitted when the global interest rate is updated
     event interestRateSet(uint256 newInterestRate);
@@ -32,6 +33,11 @@ contract RebaseToken is ERC20 {
     }
 
     constructor() ERC20("RebaseToken", "RBT") {}
+    /*
+     * @notice Sets the global interest rate. This function can only be called by the contract owner and the new interest rate must be less than or equal to the current interest rate.
+     * @param _newInterestRate The new interest rate to set.
+     * @dev Thd interest rte can only decrease
+     */
     function setInterestRate(uint256 _newInterestRate) external {
         if (_newInterestRate > s_interestRate) {
             revert RebaseToken__interestRateCanOnlyDecrease(
@@ -44,6 +50,30 @@ contract RebaseToken is ERC20 {
     }
 
     function mint(address _to, uint256 _mintAmount) external {
+        _mintAccruedInterest[_to];
+        s_userInterestRate[_to] = s_interestRate;
         _mint(_to, _mintAmount);
+
+    function balanceOf(address _user) public view returns (uint256) {
+        // get current principal, the number of tokens actually minted to the user
+        // get the user's interest accrued , principal * interestRate
+        return balanceOf[_user] * _calculateUserAccumulatedInterestSinceLastUpdate[_user];
+    }
+
+    function _mintAccruedInterest(address _user) internal {
+        // find current balance minted to the user -> principal
+        // calculate current balance including any interest accrued -> balanceOf
+        // calculate tokens to be minted to the user
+        // call _mint tokens to the user
+        // set updated timestamp
+        uint256 balanceOf[_user] - principal;
+        s_userLastUpdatedTimeStamp[_user] = block.timestamp;
+
+    }
+    }
+    function getUserInterestRate(
+        address _user
+    ) external view returns (uint256) {
+        return s_userInterestRate[_user];
     }
 }
