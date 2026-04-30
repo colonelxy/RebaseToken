@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.24;
 
-import {Test} from "@forge-test/Test.sol";
+import {Test} from "@forge-std/test/Test.sol";
 import {RebaseToken} from "../src/RebaseToken.sol";
 
 contract RebaseTokenTest is Test {
@@ -10,7 +10,8 @@ contract RebaseTokenTest is Test {
     uint256 constant INITIAL_RATE = 5e10;
 
     function setUp() public {
-        token = new RebaseToken();
+        rebaseToken = new RebaseToken();
+        vault = new Vault(RebaseToken(address rebaseToken));
     }
 
     /* //////////////////////////////////////////////////////////////
